@@ -1,5 +1,6 @@
 from itertools import product
 from typing import Tuple
+import time
 
 import numpy as np
 
@@ -118,18 +119,24 @@ def main():
 
     print("Enumeration")
     KES = KnapsackEnumerationSolover(capacity, values, weights)
+    s = time.time()
     x_opt, v_opt, w_opt = KES.solve()
-    print(f"x_opt = {x_opt}, v_opt = {v_opt}, w_opt = {w_opt}")
+    e = time.time()
+    print(f"x_opt = {x_opt}, v_opt = {v_opt}, w_opt = {w_opt}, time = {e - s}")
 
     print("Greedy")
     KGS = KnapsackGreedySolover(capacity, values, weights)
+    s = time.time()
     x_opt, v_opt, w_opt = KGS.solve()
-    print(x_opt, v_opt, w_opt)
+    e = time.time()
+    print(f"x_opt = {x_opt}, v_opt = {v_opt}, w_opt = {w_opt}, time = {e - s}")
 
     print("Relaxed Linear")
     KRLS = KnapsackRelaxedLinearSolover(capacity, values, weights)
+    s = time.time()
     x_opt, v_opt, w_opt = KRLS.solve()
-    print(x_opt, v_opt, w_opt)
+    e = time.time()
+    print(f"x_opt = {x_opt}, v_opt = {v_opt}, w_opt = {w_opt}, time = {e - s}")
 
 
 if __name__ == "__main__":
