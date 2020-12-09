@@ -107,22 +107,27 @@ class KnapsackRelaxedLinearSolover(KnapsackSolover):
 
 
 def main():
-    N = 12
-    knapsack_instance = create_knapsack_instance(N)
-    print(knapsack_instance)
+    print("N = ", end="")
+    N = int(input())
+    capacity, values, weights = create_knapsack_instance(N)
+
+    print(f"capacity = {capacity}")
+    print(f"values = {values}")
+    print(f"weight = {weights}")
+    print(f"ratio = {values / weights}")
 
     print("Enumeration")
-    KES = KnapsackEnumerationSolover(*knapsack_instance)
+    KES = KnapsackEnumerationSolover(capacity, values, weights)
     x_opt, v_opt, w_opt = KES.solve()
-    print(x_opt, v_opt, w_opt)
+    print(f"x_opt = {x_opt}, v_opt = {v_opt}, w_opt = {w_opt}")
 
     print("Greedy")
-    KGS = KnapsackGreedySolover(*knapsack_instance)
+    KGS = KnapsackGreedySolover(capacity, values, weights)
     x_opt, v_opt, w_opt = KGS.solve()
     print(x_opt, v_opt, w_opt)
 
     print("Relaxed Linear")
-    KRLS = KnapsackRelaxedLinearSolover(*knapsack_instance)
+    KRLS = KnapsackRelaxedLinearSolover(capacity, values, weights)
     x_opt, v_opt, w_opt = KRLS.solve()
     print(x_opt, v_opt, w_opt)
 
