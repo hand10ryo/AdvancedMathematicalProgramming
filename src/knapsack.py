@@ -27,7 +27,7 @@ def create_knapsack_instance(N: int) -> Tuple[float, array, array]:
 
 
 class KnapsackSolover:
-    """Abstract class of KnapsackSolover"""
+    """ Abstract class of KnapsackSolover. """
 
     def __init__(self, capacity: int, values: array, weights: array) -> None:
         self.capacity = capacity
@@ -38,18 +38,18 @@ class KnapsackSolover:
         self.x_opt = None
         self.v_opt = None
 
-    def check_N(self):
+    def check_N(self) -> None:
         if self.N != self.weights.shape[0]:
             raise ValueError("Length of values and weights is not same.")
 
-    def solve(self):
+    def solve(self) -> None:
         return self.x_opt
 
 
 class KnapsackEnumerationSolover(KnapsackSolover):
-    """Class of KnapsackSolover solving by Enumeration"""
+    """ Class of KnapsackSolover using Enumeration. """
 
-    def solve(self) -> None:
+    def solve(self) -> Tuple[array, float, float]:
         self.v_opt = 0
         self.x_opt = np.zeros(self.N)
         for x in product(*[[0, 1] for i in range(self.N)]):
@@ -65,9 +65,9 @@ class KnapsackEnumerationSolover(KnapsackSolover):
 
 
 class KnapsackGreedySolover(KnapsackSolover):
-    """Class of KnapsackSolover solving by Greedy Algorithm"""
+    """ Class of KnapsackSolover using Greedy Algorithm. """
 
-    def solve(self) -> None:
+    def solve(self) -> Tuple[array, float, float]:
         sum_weight = 0
         self.v_opt = 0
         self.x_opt = np.zeros(self.N)
@@ -83,16 +83,30 @@ class KnapsackGreedySolover(KnapsackSolover):
         return self.x_opt.astype(int), self.v_opt, sum_weight
 
 
-class KnapsackLinearSolover(KnapsackSolover):
-    """Class of KnapsackSolover solving by Linear"""
+class KnapsackRelaxedLinearSolover(KnapsackSolover):
+    """ Class of KnapsackSolover using Relaxed Linear optimization. """
 
-    def solve(self) -> None:
+    def solve(self) -> Tuple[array, float, float]:
+        sum_weight = 0
+        self.v_opt = 0
         self.x_opt = np.zeros(self.N)
-        return self.x_opt
+
+        for i, (v, w) in enumerate(zip(self.values, self.weights)):
+            if sum_weight + w > self.capacity:
+                ratio = (self.capacity - sum_weight) / w
+                sum_weight = int(sum_weight + w * ratio)
+                self.v_opt = int(self.v_opt + v * ratio)
+                self.x_opt[i] = ratio
+                break
+            else:
+                sum_weight += w
+                self.v_opt += v
+                self.x_opt[i] = 1
+
+        return self.x_opt, self.v_opt, sum_weight
 
 
 def main():
-    # create instance
     N = 12
     knapsack_instance = create_knapsack_instance(N)
     print(knapsack_instance)
@@ -107,10 +121,10 @@ def main():
     x_opt, v_opt, w_opt = KGS.solve()
     print(x_opt, v_opt, w_opt)
 
-    # print("Linear")
-    # KLS = KnapsackLinearSolover(*knapsack_instance)
-    # x_opt, v_opt, w_opt = KLS.solve()
-    # print(x_opt, v_opt, w_opt)
+    print("Relaxed Linear")
+    KRLS = KnapsackRelaxedLinearSolover(*knapsack_instance)
+    x_opt, v_opt, w_opt = KRLS.solve()
+    print(x_opt, v_opt, w_opt)
 
 
 if __name__ == "__main__":
