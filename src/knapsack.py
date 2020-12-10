@@ -109,6 +109,7 @@ class KnapsackRelaxedLinearSolover(KnapsackSolover):
 
 def main():
     print("N = ", end="")
+
     N = int(input())
     capacity, values, weights = create_knapsack_instance(N)
 
