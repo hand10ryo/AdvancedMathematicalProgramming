@@ -28,7 +28,7 @@ def create_knapsack_instance(N: int) -> Tuple[float, array, array]:
 
 
 class KnapsackSolover:
-    """ Abstract class of KnapsackSolover. """
+    """ Abstract class of Knapsack Problem Solover. """
 
     def __init__(self, capacity: int, values: array, weights: array) -> None:
         self.capacity = capacity
@@ -48,7 +48,7 @@ class KnapsackSolover:
 
 
 class KnapsackEnumerationSolover(KnapsackSolover):
-    """ Class of KnapsackSolover using Enumeration. """
+    """ Class of Knapsack Problem Solover by Enumeration. """
 
     def solve(self) -> Tuple[array, float, float]:
         self.v_opt = 0
@@ -66,7 +66,7 @@ class KnapsackEnumerationSolover(KnapsackSolover):
 
 
 class KnapsackGreedySolover(KnapsackSolover):
-    """ Class of KnapsackSolover using Greedy Algorithm. """
+    """ Class of Knapsack Problem Solover by Greedy Algorithm. """
 
     def solve(self) -> Tuple[array, float, float]:
         sum_weight = 0
@@ -85,7 +85,7 @@ class KnapsackGreedySolover(KnapsackSolover):
 
 
 class KnapsackRelaxedLinearSolover(KnapsackSolover):
-    """ Class of KnapsackSolover using Relaxed Linear optimization. """
+    """ Class of Knapsack Problem Solover by Relaxed Linear optimization. """
 
     def solve(self) -> Tuple[array, float, float]:
         sum_weight = 0
