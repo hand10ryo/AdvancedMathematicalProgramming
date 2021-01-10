@@ -10,7 +10,7 @@ RAND_MAX = 1000
 array = np.ndarray
 
 
-def create_knapsack_instance(N: int) -> Tuple[float, array, array]:
+def create_knapsack_instance(N: int, divide=6) -> Tuple[float, array, array]:
     N = max(NMIN, min(N, NMAX))
     # Use Mersenne Twister
     values = np.array([RAND_MAX * np.random.rand() + 1 for i in range(N)])
@@ -22,7 +22,7 @@ def create_knapsack_instance(N: int) -> Tuple[float, array, array]:
     weights = weights[np.argsort(-ratio)]
     ratio = ratio[np.argsort(-ratio)]
 
-    capacity = RAND_MAX * N / 6
+    capacity = RAND_MAX * N / divide
 
     return capacity, values, weights
 
