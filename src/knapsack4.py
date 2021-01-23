@@ -9,10 +9,12 @@ from knapsack import (
     create_knapsack_instance
 )
 
+from knapsack3 import KnapsackLinearBranchBoundSolover
+
 array = np.ndarray
 
 
-class KnapsackLinearBranchBoundSolover(KnapsackSolover):
+class KnapsackPeggedLinearBranchBoundSolover(KnapsackSolover):
     """ 線形緩和問題を用いた分枝限定法でナップザック問題を解くクラス """
 
     def solve(self) -> Tuple[array, float, float]:
@@ -21,14 +23,34 @@ class KnapsackLinearBranchBoundSolover(KnapsackSolover):
             self.capacity, self.values, self.weights
         )
         self.x_opt, self.v_opt, _ = KGS.solve()
-        fixed_indices = []
-        x_tmp = np.zeros(self.N)
+
+        test_res = np.array([self.pegging_test(idx) for idx in range(self.N)])
+
+        fixed_indices = np.arange(self.N)[test_res[:, 1] == 1].tolist()
+        x_tmp = test_res[:, 0]
 
         self.BranchBound(x_tmp, fixed_indices)
 
         sum_weight = np.sum(self.x_opt * self.weights)
 
         return self.x_opt, self.v_opt, sum_weight
+
+    def pegging_test(self, idx: int) -> list:
+        x0 = np.zeros(self.N)
+        x1 = x0.copy()
+        x1[idx] = 1
+
+        _, v0, _ = self.relaxed_linear(x0, [idx])
+        _, v1, _ = self.relaxed_linear(x1, [idx])
+
+        if v0 < self.v_opt:
+            return [1, 1]
+
+        elif v1 < self.v_opt:
+            return [0, 1]
+
+        else:
+            return [0, 0]
 
     def BranchBound(self, x_tmp: array, fixed_indices: list) -> None:
         """ 深さ優先探索で分枝限定を行う再帰関数 """
@@ -112,5 +134,12 @@ if __name__ == "__main__":
     KHAS = KnapsackLinearBranchBoundSolover(capacity, values, weights)
     s = time.time()
     x_opt, v_opt, w_opt = KHAS.solve()
+    e = time.time()
+    print(f"x_opt = {x_opt}, v_opt = {v_opt}, w_opt = {w_opt}, time = {e - s}")
+
+    print("LinearBranchBound")
+    KPLBBS = KnapsackPeggedLinearBranchBoundSolover(capacity, values, weights)
+    s = time.time()
+    x_opt, v_opt, w_opt = KPLBBS.solve()
     e = time.time()
     print(f"x_opt = {x_opt}, v_opt = {v_opt}, w_opt = {w_opt}, time = {e - s}")
